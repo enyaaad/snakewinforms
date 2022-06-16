@@ -42,9 +42,9 @@
             this.ScoreLabel.AutoSize = true;
             this.ScoreLabel.Location = new System.Drawing.Point(828, 18);
             this.ScoreLabel.Name = "ScoreLabel";
-            this.ScoreLabel.Size = new System.Drawing.Size(35, 13);
+            this.ScoreLabel.Size = new System.Drawing.Size(41, 13);
             this.ScoreLabel.TabIndex = 0;
-            this.ScoreLabel.Text = "label1";
+            this.ScoreLabel.Text = "Score: ";
             // 
             // Form1
             // 

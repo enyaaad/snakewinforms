@@ -18,19 +18,18 @@ namespace snakewinforms
         private int moveX, moveY ;
         private int _width = 900;
         private int _height = 800;
-        private int _sizeOfCell = 40;
+        private int _sizeOfCell = 20;
         private int score;
         private PictureBox[] snake = new PictureBox[50];
         public Form1()
         {
-            
             InitializeComponent();
             this.KeyDown += new KeyEventHandler(OKP);
             _generateMap();
             _PrintSnake();
             _generateFruit();
-
         }
+
         private void _generateFruit()
         {
             fruit = new PictureBox();
@@ -41,7 +40,7 @@ namespace snakewinforms
                 x = r.Next(0, _height -_sizeOfCell);
                 int tempX = x % _sizeOfCell;
                 x -= tempX;
-                y = r.Next(0, _height - _sizeOfCell);
+                y = r.Next(0, _height - 200);
                 int tempY = y % _sizeOfCell;
                 y -= tempY;
                 fruit.Location = new Point(x, y);
@@ -54,6 +53,7 @@ namespace snakewinforms
                 snake[i].Location = snake[i - 1].Location;
             }
             snake[0].Location = new Point(snake[0].Location.X + moveX * _sizeOfCell, snake[0].Location.Y + moveY* _sizeOfCell );
+
         }
         private void _eat()
         {
@@ -75,13 +75,19 @@ namespace snakewinforms
             {
                 if (snake[0].Location == snake[i].Location)
                 {
+                    
+                    timer1.Stop();
                     MessageBox.Show("game is over, your score:" + score);
+                    score = 0;
+                    Restart();                                                    
                     break;
                 }
+
             }
         }
         private void _generateMap()
         {
+            this.BackColor = Color.White;
             for(int i=0; i <= _width  / _sizeOfCell; i++)
             {
                 PictureBox pictureBox = new PictureBox();
@@ -140,11 +146,87 @@ namespace snakewinforms
             snake[0].BackColor = Color.Blue;
             this.Controls.Add(snake[0]);
         }
+        private bool _checkborders()
+        { 
+            if (snake[0].Location.X < 0)
+            {
+                for(int _i = 1; _i <= score; _i++)
+                {
+                    this.Controls.Remove(snake[_i]);
+                }
+                score = 0;
+                moveX = 0;
+                moveY = 0;     
+                return true;
+            }
+            if (snake[0].Location.X > _height-_sizeOfCell)
+            {
+                for (int _i = 1; _i <= score; _i++)
+                {
+                    this.Controls.Remove(snake[_i]);
+                }
+                score = 0;
+                moveX = 0;
+                moveY = 0;
+                return true;
+            }
+            if (snake[0].Location.Y < 0 )
+            {
+                for (int _i = 1; _i <= score; _i++)
+                {
+                    this.Controls.Remove(snake[_i]);
+                }
+                score = 0;
+                moveX = 0;
+                moveY = 0;
+                return true;
+            }
+            if (snake[0].Location.Y > _height - _sizeOfCell)
+            {
+                for (int _i = 1; _i <= score; _i++)
+                {
+                    this.Controls.Remove(snake[_i]);
+                }
+                score = 0;
+                moveX = 0;
+                moveY = 0;
+                return true;
+            }
+            return false;
+        }
         private void timer1_Tick(object sender, EventArgs e)
         {
+            bool isEnd = _checkborders();
+            if (isEnd)
+            {
+                timer1.Stop();
+                if (MessageBox.Show("Restart", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+                    score = 0;
+                    Restart();
+                }
+                else
+                {
+                    this.Close();
+                }
+            }
             _moveSnake();
             _eat();
             _eatitself();
+            
+        }
+        private void Restart()
+        {
+            foreach(PictureBox snake in snake){
+                this.Controls.Remove(snake);
+            }
+            this.Controls.Remove(fruit);
+            timer1.Interval = 100;
+            timer1.Start();
+            this.KeyDown += new KeyEventHandler(OKP);
+            _generateMap();
+            _PrintSnake(); 
+            _generateFruit();
         }
     }
 }
